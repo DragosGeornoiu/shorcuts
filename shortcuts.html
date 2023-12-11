@@ -5,14 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IntelliJ Shortcut Learner</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
+        <!-- Warning Message -->
+        <div class="info-container">
+            <div class="info-text">⚠ Some browser shortcuts are disabled in order not to interfere with the gameplay.</div>
+        </div>
+
+        <!-- Rest of the content -->
         <div class="challenge-container">
             <textarea id="codeMirrorEditor"></textarea>
         </div>
         <div class="explanation-container" id="explanationContainer"></div>
         <div class="feedback-container" id="feedbackContainer"></div>
+
+        <!-- Shortcut Display Area -->
+        <div class="shortcut-display-container">
+            <textarea id="shortcutDisplay" readonly></textarea>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.js"></script>

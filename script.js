@@ -10,13 +10,14 @@ const challenges = [
         } catch (FileNotFoundException e) {
           e.printStackTrace();
         }`,
-        explanation: "Refactor this code into a new method using the shortcut 'Ctrl + M'.",
+        explanation: "Refactor this code into a new method using the appropriate shortcut.'.",
         expectedShortcut: "Control-M"
     },
     // Add more challenges as needed
 ];
 
 let currentChallengeIndex = 0;
+let pressedKeys = [];
 
 // Initialize CodeMirror
 const codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("codeMirrorEditor"), {
@@ -28,8 +29,12 @@ const codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("codeMi
 // Display the initial challenge
 displayChallenge();
 
-// Register global key press event
+// Register global key press and release events
 document.addEventListener("keydown", handleKeyPress);
+document.addEventListener("keyup", handleKeyPress);
+
+// Text area for displaying the last pressed shortcut
+const shortcutDisplay = document.getElementById("shortcutDisplay");
 
 function displayChallenge() {
     const challenge = challenges[currentChallengeIndex];
@@ -43,24 +48,25 @@ function displayChallenge() {
 
 function handleKeyPress(event) {
     // Capture the key pressed by the user
-    const keyPressed = event.key.toLowerCase();
-    const isCtrlPressed = event.ctrlKey || event.metaKey; // Check if Ctrl key is pressed
+    const keyPressed = event.key;
 
-    // Check if the pressed key matches the correct shortcut (Ctrl + M)
-    const expectedShortcut = challenges[currentChallengeIndex].expectedShortcut;
-    if (isCtrlPressed && keyPressed === "m") {
-        const feedbackContainer = document.getElementById("feedbackContainer");
-        feedbackContainer.textContent = "Correct! Next challenge.";
-        currentChallengeIndex = (currentChallengeIndex + 1) % challenges.length;
-        displayChallenge();
-    } else {
-        const feedbackContainer = document.getElementById("feedbackContainer");
-        feedbackContainer.textContent = "Incorrect. Try again.";
+    if (event.type === "keydown" && !pressedKeys.includes(keyPressed)) {
+        // Add the pressed key to the list on keydown
+        pressedKeys.push(keyPressed);
+    } else if (event.type === "keyup") {
+        // Remove the released key from the list on keyup
+        const index = pressedKeys.indexOf(keyPressed);
+        if (index !== -1) {
+            pressedKeys.splice(index, 1);
+        }
     }
 
-    // Prevent default behavior only for specific key combinations related to the browser
-    if (isCtrlPressed) {
-        console.log('pressed - ' + event.key.toLowerCase())
+    // Display the current combination of pressed keys
+    shortcutDisplay.value = pressedKeys.join(" + ");
+
+    // Prevent default behavior for specific key combinations related to the browser
+    const isBrowserShortcut = event.ctrlKey || event.altKey || event.metaKey || event.shiftKey;
+    if (isBrowserShortcut) {
         event.preventDefault();
     }
 }
